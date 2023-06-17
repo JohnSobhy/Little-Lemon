@@ -46,22 +46,17 @@ import androidx.navigation.compose.rememberNavController
 import com.john_halaka.littlelemon.data.MenuItem
 import com.john_halaka.littlelemon.data.MenuRepository
 
-
-
 @Composable
 fun HomeScreen() {
     val context = LocalContext.current
     val applicationContext = context.applicationContext
-
     val menuRepository = MenuRepository.getInstance(applicationContext)
-
-//    // we need to access the database NOT from the main thread! not sure if this is the right place for the error or not.
+   // we need to access the database NOT from the main thread! not sure if this is the right place for the error or not.
     val menuViewModel : MenuViewModel = viewModel(
                 factory = MenuViewModelFactory(menuRepository))
-
-        val menuItems by menuViewModel.menuItems.collectAsState()
-
+    val menuItems by menuViewModel.menuItems.collectAsState()
     val navController = rememberNavController()
+
 
     Column() {
         HomeHeader(navController)
@@ -281,9 +276,7 @@ fun Categories() {
 
 @Composable
 fun MenuItemsList(menuItems: List<MenuItem>) {
-
      LazyColumn {
-
              items(menuItems) { menuItem ->
                  MenuItem(
                     menuItem
