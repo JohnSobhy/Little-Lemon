@@ -14,12 +14,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.john_halaka.littlelemon.data.MenuItem
 
-@Preview
+
+
 @Composable
-fun MenuItem() {
+fun MenuItem(
+    menuItem: MenuItem
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -33,7 +36,7 @@ fun MenuItem() {
 
             ) {
             Text(
-                text = "Greek Salad",
+                text = menuItem.title,
                 modifier = Modifier
                     .fillMaxWidth(),
                 color = colorResource(id = R.color.black),
@@ -56,16 +59,18 @@ fun MenuItem() {
 
             ) {
                 Text(
-                    text = "The famous Greek salad of crispy lettuce, peppers, olives and our chic..",
+                    text = menuItem.description,
                     style = paragraphText,
                     color = Color.DarkGray
                 )
                 Text(
-                    text = "$12.99",
+                    text = ("$" + menuItem.price),
                     style = cardTitle,
                     color = colorResource(id = R.color.black)
                 )
             }
+
+
             Image(
                 painter = painterResource(id = R.drawable.greek_salad),
                 contentDescription = "food",
@@ -74,9 +79,5 @@ fun MenuItem() {
 
             )
         }
-
-
     }
-
-
 }

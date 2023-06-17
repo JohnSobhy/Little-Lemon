@@ -43,6 +43,7 @@ import androidx.preference.PreferenceManager
 
     if (isRegistered) {
         navController.navigate(Home.route)
+
     } else {
 
         Column(
@@ -193,6 +194,7 @@ import androidx.preference.PreferenceManager
                     editor.putBoolean("isRegistered", true)
                     editor.apply()
                     navController.navigate(Home.route)
+                    navController.popBackStack()
 
 
 
