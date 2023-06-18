@@ -3,7 +3,9 @@ package com.john_halaka.littlelemon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextGeometricTransform
 import androidx.compose.ui.unit.sp
 
 val markaziText = FontFamily(
@@ -32,10 +34,12 @@ val sectionTitle = TextStyle(
     fontFamily = karlaText,
     fontSize = 20.sp,
     fontWeight = FontWeight.ExtraBold
+
+
 )
 val navBar = TextStyle(
     fontFamily = karlaText,
-    fontSize = 20.sp,
+    fontSize = 18.sp,
     fontWeight = FontWeight.Bold
 )
 val leadText = TextStyle(
@@ -50,7 +54,7 @@ val sectionCategories = TextStyle(
 )
 val cardTitle = TextStyle(
     fontFamily = karlaText,
-    fontSize = 18.sp,
+    fontSize = 20.sp,
     fontWeight = FontWeight.Bold
 )
 val paragraphText = TextStyle(
