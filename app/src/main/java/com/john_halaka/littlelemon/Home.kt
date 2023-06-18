@@ -31,6 +31,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -51,18 +53,46 @@ fun HomeScreen() {
     val context = LocalContext.current
     val applicationContext = context.applicationContext
     val menuRepository = MenuRepository.getInstance(applicationContext)
-   // we need to access the database NOT from the main thread! not sure if this is the right place for the error or not.
-    val menuViewModel : MenuViewModel = viewModel(
-                factory = MenuViewModelFactory(menuRepository))
+    // we need to access the database NOT from the main thread! not sure if this is the right place for the error or not.
+    val menuViewModel: MenuViewModel = viewModel(
+        factory = MenuViewModelFactory(menuRepository)
+    )
     val menuItems by menuViewModel.menuItems.collectAsState()
     val navController = rememberNavController()
-
-
-    Column() {
+    var searchPhrase by remember { mutableStateOf("") }
+    var category by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf("") }
+    val filteredMenuItems =
+        if (searchPhrase.isBlank() && category.isBlank()) {
+            menuItems
+        } else if (searchPhrase.isNotBlank()) {
+            menuItems.filter {
+                it.title.contains(searchPhrase, ignoreCase = true)
+            }
+        } else {
+            menuItems.filter {
+                it.category.contains(category, ignoreCase = true)
+            }
+        }
+    Column {
         HomeHeader(navController)
-        HeroSection()
-        Categories()
-        MenuItemsList(menuItems)
+        HeroSection(
+            searchPhrase,
+            onSearchPhraseChanged = { searchPhrase = it },
+            category,
+            onCategoryChanged = { category = it },
+            selectedCategory,
+            onSelectedCategoryChanged = { selectedCategory = it}
+        )
+        Categories(
+            searchPhrase,
+            onSearchPhraseChanged = { searchPhrase = it },
+            category,
+            onCategoryChanged = { category = it },
+            selectedCategory,
+            onSelectedCategoryChanged = { selectedCategory = it}
+        )
+        MenuItemsList(filteredMenuItems)
     }
 }
 
@@ -91,7 +121,7 @@ fun HomeHeader(navController: NavHostController) {
         actions = {
 
             IconButton(onClick = {
-               // navController.navigate(Profile.route)
+                // navController.navigate(Profile.route)
             }) {
                 Icon(Icons.Filled.Person, contentDescription = "Profile")
             }
@@ -99,9 +129,22 @@ fun HomeHeader(navController: NavHostController) {
     )
 }
 
-@Preview
+
 @Composable
-fun HeroSection() {
+fun HeroSection(
+    searchPhrase: String,
+    onSearchPhraseChanged: (String) -> Unit,
+    category : String,
+    onCategoryChanged : (String) -> Unit,
+    selectedCategory : String,
+    onSelectedCategoryChanged: (String) -> Unit
+) {
+
+    if (searchPhrase.isNotBlank()){
+        onCategoryChanged("")
+        onSelectedCategoryChanged ("")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -154,7 +197,7 @@ fun HeroSection() {
                     .height(IntrinsicSize.Min)
                     .clip(RoundedCornerShape(16.dp))
 
-                )
+            )
         }
 
         Box(
@@ -177,8 +220,9 @@ fun HeroSection() {
                         .align(Alignment.CenterVertically)
                         .padding(start = 16.dp)
                 )
+
                 TextField(
-                    value = "",
+                    value = searchPhrase,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 4.dp),
@@ -186,9 +230,10 @@ fun HeroSection() {
                     colors = TextFieldDefaults.textFieldColors(
                         backgroundColor = MaterialTheme.colors.surface
                     ),
-                    onValueChange = {
-                        TODO()
-                    },
+                    placeholder = { Text("Find Your Favourite Dish") },
+                    onValueChange =
+                        onSearchPhraseChanged
+                    ,
                     shape = RoundedCornerShape(16.dp)
                 )
             }
@@ -200,9 +245,15 @@ fun HeroSection() {
 
 }
 
-@Preview
 @Composable
-fun Categories() {
+fun Categories(
+    searchPhrase: String,
+    onSearchPhraseChanged: (String) -> Unit,
+    category: String,
+    onCategoryChanged: (String) -> Unit ,
+    selectedCategory : String,
+    onSelectedCategoryChanged: (String) -> Unit
+) {
 
     Column(
         modifier = Modifier
@@ -225,9 +276,20 @@ fun Categories() {
 
         ) {
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    onSearchPhraseChanged("")
+                    onSelectedCategoryChanged ("Starters")
+                    onCategoryChanged("Starters")
+                },
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Secondary3)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (selectedCategory == "Starters") {
+                        colorResource(id = R.color.Secondary1)
+                    } else {
+                        colorResource(id = R.color.Secondary3)
+                    }
+                ),
                 modifier = Modifier.padding(end = 8.dp)
 
 
@@ -236,31 +298,64 @@ fun Categories() {
             }
 
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    onSearchPhraseChanged("")
+                    onSelectedCategoryChanged  ("Mains")
+                    onCategoryChanged("Mains")
+                },
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Secondary3)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (selectedCategory == "Mains") {
+                        colorResource(id = R.color.Secondary1)
+                    } else {
+                        colorResource(id = R.color.Secondary3)
+                    }
+                ),
                 modifier = Modifier.padding(end = 8.dp)
 
             ) {
                 Text(text = "Mains", style = sectionCategories)
             }
 
-           TextButton(
-                onClick = { /*TODO*/ },
+            TextButton(
+                onClick = {
+                    onSearchPhraseChanged("")
+                    onSelectedCategoryChanged ("Deserts")
+                    onCategoryChanged("Deserts")
+                },
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Secondary3)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (selectedCategory == "Deserts") {
+                        colorResource(id = R.color.Secondary1)
+                    } else {
+                        colorResource(id = R.color.Secondary3)
+                    }
+                ),
                 modifier = Modifier.padding(end = 8.dp)
 
-            ){
+            ) {
                 Text(text = "Desserts", style = sectionCategories)
             }
 
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    onSearchPhraseChanged("")
+                    onSelectedCategoryChanged  ("Sides")
+                    onCategoryChanged("Sides")
+                },
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.Secondary3)),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor =
+                    if (selectedCategory == "Sides") {
+                        colorResource(id = R.color.Secondary1)
+                    } else {
+                        colorResource(id = R.color.Secondary3)
+                    }
+                ),
 
-            ) {
+                ) {
                 Text(
                     text = "Sides",
                     style = sectionCategories,
@@ -276,14 +371,16 @@ fun Categories() {
 
 @Composable
 fun MenuItemsList(menuItems: List<MenuItem>) {
-     LazyColumn {
-             items(menuItems) { menuItem ->
-                 MenuItem(
-                    menuItem
-                 )
-             }
-         }
+    LazyColumn {
+        items(
+            menuItems
+        ) { menuItem ->
+            MenuItem(
+                menuItem
+            )
         }
+    }
+}
 
 
 
