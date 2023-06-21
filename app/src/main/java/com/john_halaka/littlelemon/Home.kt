@@ -1,5 +1,6 @@
 package com.john_halaka.littlelemon
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,7 +50,7 @@ import com.john_halaka.littlelemon.data.MenuItem
 import com.john_halaka.littlelemon.data.MenuRepository
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     val context = LocalContext.current
     val applicationContext = context.applicationContext
     val menuRepository = MenuRepository.getInstance(applicationContext)
@@ -58,7 +59,7 @@ fun HomeScreen() {
         factory = MenuViewModelFactory(menuRepository)
     )
     val menuItems by menuViewModel.menuItems.collectAsState()
-    val navController = rememberNavController()
+    Log.d("HomeScreen", "menuItems: $menuItems")
     var searchPhrase by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("") }
@@ -121,7 +122,7 @@ fun HomeHeader(navController: NavHostController) {
         actions = {
 
             IconButton(onClick = {
-                // navController.navigate(Profile.route)
+                 navController.navigate(Profile.route)
             }) {
                 Icon(Icons.Filled.Person, contentDescription = "Profile")
             }
@@ -372,9 +373,7 @@ fun Categories(
 @Composable
 fun MenuItemsList(menuItems: List<MenuItem>) {
     LazyColumn {
-        items(
-            menuItems
-        ) { menuItem ->
+        items(menuItems) { menuItem ->
             MenuItem(
                 menuItem
             )
