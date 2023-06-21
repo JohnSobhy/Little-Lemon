@@ -5,9 +5,9 @@ This app has search and filtering functionalities to help clients find the food 
 
 ## 📲 Design & Screenshots
 - [Little Lemon Figma](https://www.figma.com/file/266lvPFHJ2PHuTvTUAFg9H/Little-lemon-home?type=design&node-id=0%3A1&t=ywChUOukYlZwt2KG-1)
-<p align="left">
+<p align="center">
   <img width="118" alt="image" src="https://github.com/JohnSobhy/Little-Lemon/blob/master/app/src/main/res/drawable/wireframe.png">
-   <img width="118" alt="image" src="https://github.com/JohnSobhy/Little-Lemon/blob/master/app/src/main/res/drawable/wireframe.png">
+   <img width="118" alt="image" src="https://github.com/JohnSobhy/Little-Lemon/blob/current/app/src/main/res/drawable/app_screenshot.png">
 </p>
 
 ## 🛠️ Libraries & Tools
