@@ -16,7 +16,7 @@ fun Navigation() {
 
         }
         composable(Home.route) {
-            HomeScreen()
+            HomeScreen(navController)
         }
 
         composable(Profile.route) {

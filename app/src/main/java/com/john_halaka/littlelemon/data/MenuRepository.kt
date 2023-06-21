@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import com.john_halaka.littlelemon.MenuNetwork
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -22,13 +23,19 @@ class MenuRepository(private val menuItemDao: MenuItemDao, private val context: 
 
 
     suspend fun getMenuItems(): List<MenuItem> {
+        val menuItems = menuItemDao.getAll()
+        Log.d("MenuRepository", "getMenuItems returned: $menuItems")
         return menuItemDao.getAll()
     }
     suspend fun insertAll(menuItems: List<MenuItem>) {
+        Log.d("MenuRepository", "insertAll called with menuItems: $menuItems")
         menuItemDao.insertAll(menuItems)
+        val insertedItems = menuItemDao.getAll()
+        Log.d("MenuRepository", "insertAll inserted items: $insertedItems")
     }
 
     suspend fun fetchMenuItems(): MenuNetwork? {
+        Log.d("MenuRepository", "fetchMenuItems called")
         if (isNetworkAvailable(context)) {
             val client = HttpClient(Android) {
                 install(Logging) {
@@ -48,6 +55,8 @@ class MenuRepository(private val menuItemDao: MenuItemDao, private val context: 
             }
             val url = "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json"
             val menuItems: MenuNetwork = client.get(url).body()
+            Log.d("MenuRepository", "menuItems: $menuItems")
+
             return menuItems
         } else {
             // Handle the absence of an internet connection here

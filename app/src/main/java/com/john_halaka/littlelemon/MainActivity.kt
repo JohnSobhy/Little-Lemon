@@ -15,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.compose.rememberNavController
 import com.john_halaka.littlelemon.data.MenuItem
 import com.john_halaka.littlelemon.data.MenuRepository
 
@@ -44,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            HomeScreen()
+            Navigation()
         }
     }
 }
